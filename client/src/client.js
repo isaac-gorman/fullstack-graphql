@@ -9,7 +9,7 @@ import gql from 'graphql-tag'
 
 //  Creating a new Apollo Client in 3 steps 
 //  1) Apollo Link: Network interface to access the graphql server. It operates at the network level. This link will point Apollo to the GraphQL Server. http://localhost:4000/. I am telling Apollo that my API is operating at this link: http://localhost:4000/.
-const link = new HttpLink({uri: 'https://rickandmortyapi.com/graphql'});
+const link = new HttpLink({uri: 'http://localhost:4000/'});
 
 // 2) Apollo Cache: By default Apollo provides you with a cache called InMemoryCache from 'apollo-cache-inmemory'
 const cache = new InMemoryCache()
@@ -21,19 +21,19 @@ const client = new ApolloClient({
 })
 
 // Creating a simple gql query
-const query = gql`
-{
-    characters{
-        results{
-            name
-            id
-        }
-    }
-}
-`
+// const query = gql`
+// {
+//     characters{
+//         results{
+//             name
+//             id
+//         }
+//     }
+// }
+// `
 
-client.query({query})
-    .then((result) => console.log(result))
+// client.query({query})
+//     .then((result) => console.log(result))
 // the result will come back as data. Every GQL request will respond with a data object, and errors for errors
 
 
