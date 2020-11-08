@@ -17,13 +17,7 @@
 // Steps to updating the cache:
 // 1) Read from the cache to access the query
 // 2) Update the cache with the same, with the same query
-// 3) Add a new state for the Apollo Cache 
-// - - DO NOT: use imutateble operation, push, pop. Its immutable, and make sure that I do this as if apollo did this automatically. 
-
-   
-
-
-
+// 3) Add a new state for the Apollo Cache in an immutable way such as using the "..."spread operator
 
 
 function AddToDo(){
