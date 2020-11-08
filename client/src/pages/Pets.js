@@ -7,36 +7,37 @@ import Loader from '../components/Loader'
 import { OptimisticCacheLayer } from 'apollo-cache-inmemory/lib/inMemoryCache'
 
 
-const ALL_PETS = gql`
-query AllPets {
-  pets{
+const PETS_FIELDS =  gql`
+  fragment PetsFields on Pet {
     id
     name
     type
     img
+    vaccinated @client
     owner {
       id
       username
       age @client
     }
   }
+`
+
+const ALL_PETS = gql`
+query AllPets {
+  pets {
+    ...PetsFields
+  }
 }
+${PETS_FIELDS}
 `
  
 const NEW_PET = gql`
   mutation CreatePet($newPet: NewPetInput!){
     addPet(input: $newPet){
-      id
-      name
-      type
-      img
-      owner {
-        id
-        username
-        age @client
-    }
+      ...PetsFields
     }
   }
+  ${PETS_FIELDS}
 `
 
 export default function Pets () {
@@ -62,13 +63,13 @@ export default function Pets () {
     return <p>error</p>
   }
 
-  console.log('data.pets:', data.pets[0])
+  // console.log('data.pets:', data.pets[0])
 
 
   // const pets = data
-  // console.log('loading:', loading)
-  // console.log("data:", data)
-  // console.log("error:", error)
+  console.log('loading:', loading)
+  console.log("data:", data)
+  console.log("error:", error)
 
   const onSubmit = input => {
     setModal(false)
@@ -83,7 +84,6 @@ export default function Pets () {
             name: input.name,
             type: input.type,
             img:  'https://via.placeholder.com/300'
-            
           }
 
         }

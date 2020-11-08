@@ -23,13 +23,22 @@ const typeDefs = gql`
      age: Int
     }
 
+    extend type Pet{
+     vaccinated: Boolean!
+    }
+
 `
 const resolvers = {
     User: {
      age(){
       return 35
         }
-    }
+    }, 
+    Pet : {
+     vaccinated(){
+         return true
+     }
+    } 
 }
 
 // creating client side gql schema ------------------------------
