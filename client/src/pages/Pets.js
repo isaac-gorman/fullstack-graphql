@@ -4,6 +4,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks'
 import PetsList from '../components/PetsList'
 import NewPetModal from '../components/NewPetModal'
 import Loader from '../components/Loader'
+import { OptimisticCacheLayer } from 'apollo-cache-inmemory/lib/inMemoryCache'
 
 
 const ALL_PETS = gql`
@@ -32,6 +33,7 @@ export default function Pets () {
   const [modal, setModal] = useState(false)
   // As and argument useQuery will take a GraphQL query
   const {data, loading, error} = useQuery(ALL_PETS)
+
   const [createPet, newPet] = useMutation(NEW_PET, {
     update(cache, {data: {addPet}}){
       const data = cache.readQuery({query: ALL_PETS});
@@ -42,7 +44,7 @@ export default function Pets () {
     }
   })
 
-  if(loading | newPet.loading){
+  if(loading){
     return <Loader/>
   }
 
@@ -58,8 +60,22 @@ export default function Pets () {
   const onSubmit = input => {
     setModal(false)
       createPet({
-        variables: { newPet: input}
+        variables: { newPet: input},
+        // I am going to implement the O_UI response so that I have access to the input arguments, which will enable me to get as close as possible to the result of the server, which minimized the interaction of the server response coming in and replacing the hard coded data that I am about to write. 
+        optimisticResponse: {
+          __typename: 'Mutation',
+          addPet: {
+            __typename: 'Pet',
+            id: Math.floor(Math.random() * 1000) + '',
+            name: input.name,
+            type: input.type,
+            img:  'https://via.placeholder.com/300'
+          }
+
+        }
+
       })
+      
   }
   
   if (modal) {
