@@ -9,24 +9,44 @@ import Loader from '../components/Loader'
 const ALL_PETS = gql`
 query AllPets {
   pets{
-    name
     id
-    img
+    name
     type
+    img
   }
 }
+`
+ 
+const NEW_PET = gql`
+  mutation CreatePet($newPet: NewPetInput!){
+    addPet(input: $newPet){
+      id
+      name
+      type
+      img
+    }
+  }
 `
 
 export default function Pets () {
   const [modal, setModal] = useState(false)
   // As and argument useQuery will take a GraphQL query
   const {data, loading, error} = useQuery(ALL_PETS)
+  const [createPet, newPet] = useMutation(NEW_PET, {
+    update(cache, {data: {addPet}}){
+      const data = cache.readQuery({query: ALL_PETS});
+      cache.writeQuery({
+        query: ALL_PETS,
+        data: {pets: [addPet, ...data.pets] }
+      })
+    }
+  })
 
-  if(loading){
+  if(loading | newPet.loading){
     return <Loader/>
   }
 
-  if(error){
+  if(error | newPet.error ){
     return <p>error</p>
   }
 
@@ -37,6 +57,9 @@ export default function Pets () {
 
   const onSubmit = input => {
     setModal(false)
+      createPet({
+        variables: { newPet: input}
+      })
   }
   
   if (modal) {
@@ -62,3 +85,15 @@ export default function Pets () {
     </div>
   )
 }
+
+
+// Mutation Query 
+// mutation CreatePet($newPet: NewPetInput!){
+//   addPet(input: $newPet){
+//     id
+//     name
+//     type
+//     img
+//   }
+// }
+
