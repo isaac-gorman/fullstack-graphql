@@ -14,6 +14,11 @@ query AllPets {
     name
     type
     img
+    owner {
+      id
+      username
+      age @client
+    }
   }
 }
 `
@@ -25,6 +30,11 @@ const NEW_PET = gql`
       name
       type
       img
+      owner {
+        id
+        username
+        age @client
+    }
     }
   }
 `
@@ -52,10 +62,13 @@ export default function Pets () {
     return <p>error</p>
   }
 
+  console.log('data.pets:', data.pets[0])
+
+
   // const pets = data
-  console.log('loading:', loading)
-  console.log("data:", data)
-  console.log("error:", error)
+  // console.log('loading:', loading)
+  // console.log("data:", data)
+  // console.log("error:", error)
 
   const onSubmit = input => {
     setModal(false)
@@ -70,6 +83,7 @@ export default function Pets () {
             name: input.name,
             type: input.type,
             img:  'https://via.placeholder.com/300'
+            
           }
 
         }

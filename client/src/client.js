@@ -9,7 +9,30 @@ import gql from 'graphql-tag'
  * Create a new apollo client and export as default
  */
 
+// creating client side gql schema ------------------------------
+// What do I need? 
+// - type defs
+// - query type
+// - resolvers to resolve the queries and mutations: these reslovers are function that are responsible for getting the values for the fields on the type definitions  
+// - I also need to use SDL "schema definition languge"
 
+// - Note bellw I have created a type that does not exist on the server but does on the client now and I can dervive it from anywhere on the client now, because it is local state. 
+
+const typeDefs = gql`
+    extend type User{
+     age: Int
+    }
+
+`
+const resolvers = {
+    User: {
+     age(){
+      return 35
+        }
+    }
+}
+
+// creating client side gql schema ------------------------------
 
 
 //  Creating a new Apollo Client in 3 steps 
@@ -34,7 +57,9 @@ const cache = new InMemoryCache()
 // 3) Intialze the client  
 const client = new ApolloClient({
     link,
-    cache
+    cache, 
+    resolvers,
+    typeDefs
 })
 
 // Creating a simple gql query
